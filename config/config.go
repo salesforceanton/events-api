@@ -11,16 +11,17 @@ const ENV_PREFIX = "eventsapi"
 
 type Config struct {
 	DBHost           string `envconfig:"DB_HOST"`
-	DBPort           int    `envconfig:"DB_PORT"`
+	DBPort           string `envconfig:"DB_PORT"`
 	DBUsername       string `envconfig:"DB_USERNAME"`
 	DBName           string `envconfig:"DB_NAME"`
 	DBPassword       string `envconfig:"DB_PASSWORD"`
 	PasswordHashSalt string `envconfig:"PASSWORD_HASH_SALT"`
 	TokenSecret      string `envconfig:"TOKEN_SECRET"`
+	Port             string `envconfig:"PORT"`
 }
 
 // Recieve configuration values from env variables
-func (c *Config) initConfig() (*Config, error) {
+func InitConfig() (*Config, error) {
 	if err := godotenv.Load(); err != nil {
 		return nil, errors.New("Error with config initialization")
 	}
