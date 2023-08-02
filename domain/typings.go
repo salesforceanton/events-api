@@ -1,1 +1,15 @@
 package events
+
+type User struct {
+	Id       int    `json:"-" db:"id"`
+	Email    string `json:"email" db:"email" binding:"required"`
+	Username string `json:"username" db:"username" binding:"required"`
+	Password string `json:"password" db:"password_hash" binding:"required"`
+}
+
+type Event struct {
+	Id          int    `json:"-" db:"id"`
+	Title       string `json:"title" db:"title" binding:"required"`
+	OrganizerId string `json:"organizerId" db:"organizerId" binding:"required"`
+	Description string `json:"description" db:"description"`
+}
