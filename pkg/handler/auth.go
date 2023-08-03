@@ -19,7 +19,7 @@ func (h *Handler) SignUp(ctx *gin.Context) {
 		NewErrorResponse(ctx, http.StatusBadRequest, "Request is invalid type")
 	}
 
-	id, err := h.services.CreateUser(request)
+	id, err := h.services.Authorization.CreateUser(request)
 	if err != nil {
 		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 	}
@@ -35,7 +35,7 @@ func (h *Handler) SignIn(ctx *gin.Context) {
 		NewErrorResponse(ctx, http.StatusBadRequest, "Request is invalid type")
 	}
 
-	token, err := h.services.GenerateToken(request.Username, request.Password)
+	token, err := h.services.Authorization.GenerateToken(request.Username, request.Password)
 	if err != nil {
 		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 	}

@@ -28,7 +28,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		events := api.Group("events")
 		{
 			events.GET("/", h.GetAll)
-			events.POST("/", h.Upsert)
+			events.POST("/", h.Create)
+			events.POST("/:id", h.Update)
 			events.GET("/:id", h.GetById)
 			events.DELETE("/:id", h.Delete)
 		}

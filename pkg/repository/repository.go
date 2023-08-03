@@ -18,7 +18,8 @@ type Authorization interface {
 type Events interface {
 	GetAll(userId int) ([]domain.Event, error)
 	GetById(userId, eventId int) (domain.Event, error)
-	Upsert(event domain.Event) (int, error)
+	Create(event domain.Event) (int, error)
+	Update(userId int, event domain.Event) (domain.Event, error)
 	Delete(userId, eventId int) error
 }
 

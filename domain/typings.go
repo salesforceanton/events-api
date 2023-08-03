@@ -8,10 +8,10 @@ type User struct {
 }
 
 type Event struct {
-	Id            int    `json:"-" db:"id"`
+	Id            int    `json:"id" db:"id"`
 	Title         string `json:"title" db:"title" binding:"required"`
-	StartDatetime string `json:"startDatetime" db:"startDatetime" binding:"required"`
-	TimezoneId    string `json:"timezoneId" db:"timezoneId"`
-	OrganizerId   int    `json:"organizerId" db:"organizerId" binding:"required"`
+	StartDatetime string `json:"startDatetime" db:"startdatetime" binding:"required"`
+	TimezoneId    string `json:"timezoneId" db:"timezoneid"`
+	OrganizerId   int    `json:"organizerId" db:"organizerid"`
 	Description   string `json:"description" db:"description"`
 }

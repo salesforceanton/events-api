@@ -26,10 +26,14 @@ func (s *EventsService) GetById(userId, eventId int) (domain.Event, error) {
 	return s.repo.GetById(userId, eventId)
 }
 
-func (s *EventsService) Upsert(userId int, event domain.Event) (int, error) {
-	// TODO: Add update access check
+func (s *EventsService) Create(userId int, event domain.Event) (int, error) {
 	event.OrganizerId = userId
-	return s.repo.Upsert(event)
+	return s.repo.Create(event)
+}
+
+func (s *EventsService) Update(userId, eventId int, event domain.Event) (domain.Event, error) {
+	event.Id = eventId
+	return s.repo.Update(userId, event)
 }
 
 func (s *EventsService) Delete(userId, eventId int) error {
