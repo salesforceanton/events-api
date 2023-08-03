@@ -1,6 +1,9 @@
 package repository
 
-import "github.com/jmoiron/sqlx"
+import (
+	"github.com/jmoiron/sqlx"
+	"github.com/salesforceanton/events-api/domain"
+)
 
 type Repository struct {
 	Authorization
@@ -8,6 +11,8 @@ type Repository struct {
 }
 
 type Authorization interface {
+	CreateUser(domain.User) (int, error)
+	GetUser(username, password string) (domain.User, error)
 }
 
 type Events interface {

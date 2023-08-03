@@ -39,7 +39,7 @@ func main() {
 
 	// Init dependenties
 	repos := repository.NewRepository(db)
-	services := service.NewService(repos)
+	services := service.NewService(repos, cfg)
 	handler := handler.NewHandler(services)
 
 	server := new(eventsapi.Server)
