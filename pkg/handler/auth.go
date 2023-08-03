@@ -7,6 +7,11 @@ import (
 	"github.com/salesforceanton/events-api/domain"
 )
 
+type SignInInput struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
 func (h *Handler) SignUp(ctx *gin.Context) {
 	var request domain.User
 
@@ -24,7 +29,7 @@ func (h *Handler) SignUp(ctx *gin.Context) {
 	})
 }
 func (h *Handler) SignIn(ctx *gin.Context) {
-	var request domain.User
+	var request SignInInput
 
 	if err := ctx.BindJSON(&request); err != nil {
 		NewErrorResponse(ctx, http.StatusBadRequest, "Request is invalid type")

@@ -12,11 +12,16 @@ type Service struct {
 }
 
 type Authorization interface {
-	CreateUser(domain.User) (int, error)
+	CreateUser(user domain.User) (int, error)
 	GenerateToken(username, password string) (string, error)
+	ParseToken(accessToken string) (int, error)
 }
 
 type Events interface {
+	GetAll(userId int) ([]domain.Event, error)
+	GetById(userId, eventId int) (domain.Event, error)
+	Upsert(userId int, event domain.Event) (int, error)
+	Delete(userId, eventId int) error
 }
 
 func NewService(repos *repository.Repository, cfg *config.Config) *Service {

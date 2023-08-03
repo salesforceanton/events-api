@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/salesforceanton/events-api/pkg/service"
 )
@@ -33,4 +35,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	}
 
 	return router
+}
+
+func (h *Handler) getUrlParam(ctx *gin.Context, param string) (int, error) {
+	result, err := strconv.Atoi(ctx.Param(param))
+	return result, err
 }
