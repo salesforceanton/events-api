@@ -37,3 +37,10 @@ To configure db - we can use migrate - files to up/down migration is included:
 To run server use comman
 
 ```go run cmd/main.go```
+
+### Swager
+
+Swagger is also included
+To test via this tool - open swagger on PORT which web-server is working on 
+
+```http://${HOST}:${PORT}/swagger/index.html```

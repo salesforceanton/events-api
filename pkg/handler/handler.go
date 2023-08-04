@@ -5,8 +5,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/salesforceanton/events-api/pkg/service"
+
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "github.com/salesforceanton/events-api/docs"
 )
 
 type Handler struct {

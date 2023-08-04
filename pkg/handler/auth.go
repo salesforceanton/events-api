@@ -7,7 +7,12 @@ import (
 	"github.com/salesforceanton/events-api/domain"
 )
 
-// @Summary SignUp
+type SignInInput struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+// @Summary Registration
 // @Tags auth
 // @Description Register a new User in the system
 // @ID create-account
@@ -19,11 +24,6 @@ import (
 // @Failure 500 {object} ErrorResponse
 // @Failure default {object} ErrorResponse
 // @Router /auth/sign-up [post]
-type SignInInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
 func (h *Handler) SignUp(ctx *gin.Context) {
 	var request domain.User
 
@@ -41,7 +41,7 @@ func (h *Handler) SignUp(ctx *gin.Context) {
 	})
 }
 
-// @Summary SignIn
+// @Summary Login
 // @Tags auth
 // @Description Login via Username and Password credentials
 // @ID login

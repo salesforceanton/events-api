@@ -1,12 +1,23 @@
-basePath: /
 definitions:
+  domain.User:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
   handler.ErrorResponse:
     properties:
       message:
         type: string
     type: object
   handler.SignInInput:
-    description: Register a new User in the system
     properties:
       password:
         type: string
@@ -16,7 +27,6 @@ definitions:
     - password
     - username
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: API Server for booking Events
@@ -59,7 +69,46 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/handler.ErrorResponse'
-      summary: SignIn
+      summary: Login
+      tags:
+      - auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Register a new User in the system
+      operationId: create-account
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Registration
       tags:
       - auth
 securityDefinitions:
