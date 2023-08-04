@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -10,6 +9,7 @@ import (
 	eventsapi "github.com/salesforceanton/events-api"
 	"github.com/salesforceanton/events-api/config"
 	"github.com/salesforceanton/events-api/pkg/handler"
+	"github.com/salesforceanton/events-api/pkg/logger"
 	"github.com/salesforceanton/events-api/pkg/repository"
 	"github.com/salesforceanton/events-api/pkg/service"
 	log "github.com/sirupsen/logrus"
@@ -32,18 +32,14 @@ func main() {
 	// Initialize app configuration
 	cfg, err := config.InitConfig()
 	if err != nil {
-		log.WithFields(log.Fields{
-			"problem": fmt.Sprintf("Error with config initialization: %s", err.Error()),
-		}).Error(err)
+		logger.LogExecutionIssue(err)
 		return
 	}
 
 	// Connect to DB
 	db, err := repository.NewPostgresDB(cfg)
 	if err != nil {
-		log.WithFields(log.Fields{
-			"problem": fmt.Sprintf("Error with database connect: %s", err.Error()),
-		}).Error(err)
+		logger.LogExecutionIssue(err)
 		return
 	}
 
@@ -56,9 +52,7 @@ func main() {
 	server := new(eventsapi.Server)
 	go func() {
 		if err := server.Run(cfg.Port, handler.InitRoutes()); err != nil {
-			log.WithFields(log.Fields{
-				"problem": fmt.Sprintf("Error with server running/or server in closing: %s", err.Error()),
-			}).Error(err)
+			logger.LogExecutionIssue(err)
 			return
 		}
 	}()
@@ -69,16 +63,12 @@ func main() {
 	<-exit
 
 	if err := server.Shutdown(context.Background()); err != nil {
-		log.WithFields(log.Fields{
-			"problem": fmt.Sprintf("Error when server was shutting down: %s", err.Error()),
-		}).Error(err)
+		logger.LogExecutionIssue(err)
 		return
 	}
 
 	if err := db.Close(); err != nil {
-		log.WithFields(log.Fields{
-			"problem": fmt.Sprintf("Error with closing database connection: %s", err.Error()),
-		}).Error(err)
+		logger.LogExecutionIssue(err)
 		return
 	}
 

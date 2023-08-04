@@ -1,11 +1,13 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/salesforceanton/events-api/domain"
+	"github.com/salesforceanton/events-api/pkg/logger"
 )
 
 type EventsResponse struct {
@@ -31,6 +33,7 @@ func (h *Handler) GetAll(ctx *gin.Context) {
 
 	result, err := h.services.Events.GetAll(userId)
 	if err != nil {
+		logger.LogHandlerIssue("get-all", err)
 		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -60,12 +63,14 @@ func (h *Handler) GetById(ctx *gin.Context) {
 
 	eventId, err := h.getUrlParam(ctx, "id")
 	if err != nil {
+		logger.LogHandlerIssue("get-by-id", errors.New("Invalid param in url: [id]"))
 		NewErrorResponse(ctx, http.StatusInternalServerError, "Invalid param in url: [id]")
 		return
 	}
 
 	result, err := h.services.Events.GetById(userId, eventId)
 	if err != nil {
+		logger.LogHandlerIssue("get-by-id", err)
 		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -88,6 +93,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 	var request domain.SaveEventRequest
 
 	if err := ctx.BindJSON(&request); err != nil {
+		logger.LogHandlerIssue("create", errors.New("Request is invalid type"))
 		NewErrorResponse(ctx, http.StatusBadRequest, "Request is invalid type")
 	}
 
@@ -99,6 +105,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 
 	result, err := h.services.Events.Create(userId, request)
 	if err != nil {
+		logger.LogHandlerIssue("create", err)
 		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -124,6 +131,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 	var request domain.SaveEventRequest
 
 	if err := ctx.BindJSON(&request); err != nil {
+		logger.LogHandlerIssue("update", errors.New("Request is invalid type"))
 		NewErrorResponse(ctx, http.StatusBadRequest, "Request is invalid type")
 		return
 	}
@@ -136,12 +144,14 @@ func (h *Handler) Update(ctx *gin.Context) {
 
 	eventId, err := h.getUrlParam(ctx, "id")
 	if err != nil {
+		logger.LogHandlerIssue("update", err)
 		NewErrorResponse(ctx, http.StatusInternalServerError, "Invalid param in url: [id]")
 		return
 	}
 
 	result, err := h.services.Events.Update(userId, eventId, request)
 	if err != nil {
+		logger.LogHandlerIssue("update", err)
 		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -169,12 +179,14 @@ func (h *Handler) Delete(ctx *gin.Context) {
 
 	eventId, err := h.getUrlParam(ctx, "id")
 	if err != nil {
+		logger.LogHandlerIssue("delete", errors.New("Invalid param in url: [id]"))
 		NewErrorResponse(ctx, http.StatusInternalServerError, "Invalid param in url: [id]")
 		return
 	}
 
 	err = h.services.Events.Delete(userId, eventId)
 	if err != nil {
+		logger.LogHandlerIssue("delete", err)
 		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
 		return
 	}
