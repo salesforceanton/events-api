@@ -39,7 +39,7 @@ func (r *EventsPostgres) GetById(userId, eventId int) (domain.Event, error) {
 	return result, err
 }
 
-func (r *EventsPostgres) Create(event domain.Event) (int, error) {
+func (r *EventsPostgres) Create(userId int, request domain.SaveEventRequest) (int, error) {
 	var result int
 
 	query := fmt.Sprintf(
@@ -48,7 +48,7 @@ func (r *EventsPostgres) Create(event domain.Event) (int, error) {
 		RETURNING id`,
 		EVENTS_TABLE,
 	)
-	row := r.db.QueryRow(query, event.Title, event.TimezoneId, event.StartDatetime, event.Description, event.OrganizerId)
+	row := r.db.QueryRow(query, request.Title, request.TimezoneId, request.StartDatetime, request.Description, userId)
 	if err := row.Scan(&result); err != nil {
 		return 0, err
 	}
@@ -56,20 +56,19 @@ func (r *EventsPostgres) Create(event domain.Event) (int, error) {
 	return result, nil
 }
 
-func (r *EventsPostgres) Update(userId int, event domain.Event) (domain.Event, error) {
+func (r *EventsPostgres) Update(userId, eventId int, request domain.SaveEventRequest) (domain.Event, error) {
 	var result domain.Event
-	fmt.Println(userId)
 
 	query := fmt.Sprintf(
 		`UPDATE %s SET title='%s', timezoneid='%s', startdatetime='%s', description='%s' 
 		 WHERE id=$1 AND organizerid=$2
 		 RETURNING id, title, description, organizerid, startdatetime, timezoneid`,
-		EVENTS_TABLE, event.Title, event.TimezoneId, event.StartDatetime, event.Description,
+		EVENTS_TABLE, request.Title, request.TimezoneId, request.StartDatetime, request.Description,
 	)
 	err := r.db.Get(
 		&result,
 		query,
-		event.Id, userId,
+		eventId, userId,
 	)
 
 	return result, err

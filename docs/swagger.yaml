@@ -1,4 +1,36 @@
 definitions:
+  domain.Event:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      organizerId:
+        type: integer
+      startDatetime:
+        type: string
+      timezoneId:
+        type: string
+      title:
+        type: string
+    required:
+    - startDatetime
+    - title
+    type: object
+  domain.SaveEventRequest:
+    properties:
+      description:
+        type: string
+      startDatetime:
+        type: string
+      timezoneId:
+        type: string
+      title:
+        type: string
+    required:
+    - startDatetime
+    - title
+    type: object
   domain.User:
     properties:
       email:
@@ -33,6 +65,175 @@ info:
   title: Events API
   version: "1.0"
 paths:
+  /api/events/:
+    get:
+      consumes:
+      - application/json
+      description: Get all events available for current user
+      operationId: get-all
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Event'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get all
+      tags:
+      - Events
+    post:
+      consumes:
+      - application/json
+      description: Create Event record with current User as Organizer
+      operationId: create
+      parameters:
+      - description: Request
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SaveEventRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Create
+      tags:
+      - Events
+  /api/events/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Event with defined Id if current User has access to this
+        Event record
+      operationId: delete
+      parameters:
+      - description: Event Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Delete
+      tags:
+      - Events
+    get:
+      consumes:
+      - application/json
+      description: Get Event data by defined Id if current User has access to this
+        Event record
+      operationId: get-by-id
+      parameters:
+      - description: Event Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Event'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Get by Id
+      tags:
+      - Events
+    post:
+      consumes:
+      - application/json
+      description: Update defined Event data if current User has access to this Event
+        record
+      operationId: update
+      parameters:
+      - description: Event Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Request
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SaveEventRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Event'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.ErrorResponse'
+      summary: Update
+      tags:
+      - Events
   /auth/sign-in:
     post:
       consumes:
@@ -40,7 +241,7 @@ paths:
       description: Login via Username and Password credentials
       operationId: login
       parameters:
-      - description: credentials
+      - description: Credentials
         in: body
         name: input
         required: true
@@ -65,21 +266,17 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/handler.ErrorResponse'
-        default:
-          description: ""
-          schema:
-            $ref: '#/definitions/handler.ErrorResponse'
       summary: Login
       tags:
-      - auth
+      - Auth
   /auth/sign-up:
     post:
       consumes:
       - application/json
       description: Register a new User in the system
-      operationId: create-account
+      operationId: sign-up
       parameters:
-      - description: account info
+      - description: Account Info
         in: body
         name: input
         required: true
@@ -104,13 +301,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/handler.ErrorResponse'
-        default:
-          description: ""
-          schema:
-            $ref: '#/definitions/handler.ErrorResponse'
       summary: Registration
       tags:
-      - auth
+      - Auth
 securityDefinitions:
   ApiKeyAuth:
     in: header

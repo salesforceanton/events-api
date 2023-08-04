@@ -26,14 +26,12 @@ func (s *EventsService) GetById(userId, eventId int) (domain.Event, error) {
 	return s.repo.GetById(userId, eventId)
 }
 
-func (s *EventsService) Create(userId int, event domain.Event) (int, error) {
-	event.OrganizerId = userId
-	return s.repo.Create(event)
+func (s *EventsService) Create(userId int, request domain.SaveEventRequest) (int, error) {
+	return s.repo.Create(userId, request)
 }
 
-func (s *EventsService) Update(userId, eventId int, event domain.Event) (domain.Event, error) {
-	event.Id = eventId
-	return s.repo.Update(userId, event)
+func (s *EventsService) Update(userId, eventId int, request domain.SaveEventRequest) (domain.Event, error) {
+	return s.repo.Update(userId, eventId, request)
 }
 
 func (s *EventsService) Delete(userId, eventId int) error {

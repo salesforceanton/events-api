@@ -15,3 +15,10 @@ type Event struct {
 	OrganizerId   int    `json:"organizerId" db:"organizerid"`
 	Description   string `json:"description" db:"description"`
 }
+
+type SaveEventRequest struct {
+	Title         string `json:"title" db:"title" binding:"required"`
+	StartDatetime string `json:"startDatetime" db:"startdatetime" binding:"required"`
+	TimezoneId    string `json:"timezoneId" db:"timezoneid"`
+	Description   string `json:"description" db:"description"`
+}

@@ -12,18 +12,17 @@ type SignInInput struct {
 	Password string `json:"password" binding:"required"`
 }
 
-// @Summary Registration
-// @Tags auth
+// @Summary     Registration
+// @Tags        Auth
 // @Description Register a new User in the system
-// @ID create-account
-// @Accept  json
-// @Produce  json
-// @Param input body domain.User true "account info"
-// @Success 200 {integer} integer 1
-// @Failure 400,404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
-// @Failure default {object} ErrorResponse
-// @Router /auth/sign-up [post]
+// @ID          sign-up
+// @Accept      json
+// @Produce     json
+// @Param       input   body      domain.User  true "Account Info"
+// @Success     200     {integer} integer 1
+// @Failure     400,404 {object}  ErrorResponse
+// @Failure     500     {object}  ErrorResponse
+// @Router      /auth/sign-up [post]
 func (h *Handler) SignUp(ctx *gin.Context) {
 	var request domain.User
 
@@ -41,18 +40,17 @@ func (h *Handler) SignUp(ctx *gin.Context) {
 	})
 }
 
-// @Summary Login
-// @Tags auth
+// @Summary     Login
+// @Tags        Auth
 // @Description Login via Username and Password credentials
-// @ID login
-// @Accept  json
-// @Produce  json
-// @Param input body SignInInput true "credentials"
-// @Success 200 {string} string "token"
-// @Failure 400,404 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
-// @Failure default {object} ErrorResponse
-// @Router /auth/sign-in [post]
+// @ID          login
+// @Accept      json
+// @Produce     json
+// @Param       input   body     SignInInput  true   "Credentials"
+// @Success     200     {string} string       "token"
+// @Failure     400,404 {object} ErrorResponse
+// @Failure     500     {object} ErrorResponse
+// @Router      /auth/sign-in [post]
 func (h *Handler) SignIn(ctx *gin.Context) {
 	var request SignInInput
 
