@@ -32,9 +32,9 @@ To configure db - we can use migrate - files to up/down migration is included:
 
 ```migrate -path schema/ -database postgres://${EVENTSAPI_DB_USERNAME}:${EVENTSAPI_DB_PASSWORD}@${EVENTSAPI_DB_HOST}/${EVENTSAPI_DB_NAME} up```
 
-** In this example I have used elephantSQL free Postrgres service
+** In this example I have used elephantSQL free Postgres service
 
-To run server use comman
+To run server use command
 
 ```go run cmd/main.go```
 
