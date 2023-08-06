@@ -15,6 +15,7 @@ type Authorization interface {
 	CreateUser(user domain.User) (int, error)
 	GenerateToken(username, password string) (string, error)
 	ParseToken(accessToken string) (int, error)
+	GetUserId(username, password string) (int, error)
 }
 
 type Events interface {

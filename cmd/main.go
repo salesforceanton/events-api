@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gorilla/sessions"
 	eventsapi "github.com/salesforceanton/events-api"
 	"github.com/salesforceanton/events-api/config"
 	"github.com/salesforceanton/events-api/pkg/handler"
@@ -35,6 +36,14 @@ func main() {
 		logger.LogExecutionIssue(err)
 		return
 	}
+	// Init session store
+	// TODO: move params to yaml config
+	sessionStore := sessions.NewCookieStore([]byte(cfg.SessionKey))
+	sessionStore.Options = &sessions.Options{
+		Path:     "/",
+		MaxAge:   60 * 15, // Expiration time
+		HttpOnly: true,
+	}
 
 	// Connect to DB
 	db, err := repository.NewPostgresDB(cfg)
@@ -46,7 +55,7 @@ func main() {
 	// Init dependenties
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos, cfg)
-	handler := handler.NewHandler(services)
+	handler := handler.NewHandler(services, sessionStore)
 
 	// Run server
 	server := new(eventsapi.Server)
