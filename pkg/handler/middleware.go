@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -31,8 +32,8 @@ func (h *Handler) userIdentity(ctx *gin.Context) {
 
 	userId, err := h.services.Authorization.ParseToken(headerParts[1])
 	if err != nil {
-		logger.LogHandlerIssue("user-identity", errors.New("Error with a parsing access token"))
-		NewErrorResponse(ctx, http.StatusInternalServerError, "Error with a parsing access token")
+		logger.LogHandlerIssue("user-identity", errors.New(fmt.Sprintf("Access Token is invalid: %s", err.Error())))
+		NewErrorResponse(ctx, http.StatusInternalServerError, fmt.Sprintf("Access Token is invalid: %s", err.Error()))
 		return
 	}
 
