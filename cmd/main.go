@@ -8,10 +8,11 @@ import (
 
 	eventsapi "github.com/salesforceanton/events-api"
 	"github.com/salesforceanton/events-api/config"
-	"github.com/salesforceanton/events-api/pkg/handler"
 	"github.com/salesforceanton/events-api/pkg/logger"
 	"github.com/salesforceanton/events-api/pkg/repository"
 	"github.com/salesforceanton/events-api/pkg/service"
+	grpc_client "github.com/salesforceanton/events-api/pkg/transport/grpc"
+	handler "github.com/salesforceanton/events-api/pkg/transport/rest"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -43,10 +44,17 @@ func main() {
 		return
 	}
 
+	// Connect to grpc-loggerbin
+	loggerbin, err := grpc_client.NewClient(cfg.LoggerbinPort)
+	if err != nil {
+		logger.LogExecutionIssue(err)
+		return
+	}
+
 	// Init dependenties
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos, cfg)
-	handler := handler.NewHandler(services)
+	handler := handler.NewHandler(services, loggerbin)
 
 	// Run server
 	server := new(eventsapi.Server)
