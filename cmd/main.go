@@ -9,10 +9,10 @@ import (
 	"github.com/gorilla/sessions"
 	eventsapi "github.com/salesforceanton/events-api"
 	"github.com/salesforceanton/events-api/config"
-	"github.com/salesforceanton/events-api/pkg/handler"
 	"github.com/salesforceanton/events-api/pkg/logger"
 	"github.com/salesforceanton/events-api/pkg/repository"
 	"github.com/salesforceanton/events-api/pkg/service"
+	handler "github.com/salesforceanton/events-api/pkg/transport/rest"
 	log "github.com/sirupsen/logrus"
 )
 
