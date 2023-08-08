@@ -18,6 +18,7 @@ type Config struct {
 	PasswordHashSalt string `envconfig:"PASSWORD_HASH_SALT"`
 	TokenSecret      string `envconfig:"TOKEN_SECRET"`
 	Port             string `envconfig:"PORT"`
+	SessionKey       string `envconfig:"SESSION_SECRET_KEY"`
 }
 
 // Recieve configuration values from env variables

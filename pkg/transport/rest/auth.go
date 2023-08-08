@@ -8,6 +8,11 @@ import (
 	"github.com/salesforceanton/events-api/pkg/logger"
 )
 
+const (
+	COOKIE_NAME             = "events_api_session_id"
+	SESSION_ID_COOKIE_PARAM = "session_id"
+)
+
 type SignInInput struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
@@ -62,6 +67,14 @@ func (h *Handler) SignIn(ctx *gin.Context) {
 		NewErrorResponse(ctx, http.StatusBadRequest, "Request is invalid type")
 	}
 
+	// Token-based auth
+	//h.authByToken(ctx, request)
+
+	// Sessions-based Auth
+	h.authBySession(ctx, request)
+}
+
+func (h *Handler) authByToken(ctx *gin.Context, request SignInInput) {
 	token, err := h.services.Authorization.GenerateToken(request.Username, request.Password)
 	if err != nil {
 		logger.LogHandlerIssue("sign-up", err)
@@ -71,5 +84,30 @@ func (h *Handler) SignIn(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, map[string]interface{}{
 		"token": token,
 	})
+}
 
+func (h *Handler) authBySession(ctx *gin.Context, request SignInInput) {
+	userId, err := h.services.Authorization.GetUserId(request.Username, request.Password)
+	if err != nil {
+		logger.LogHandlerIssue("sign-up", err)
+		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+	}
+
+	// Initialize new Session
+	session, err := h.sessionStore.Get(ctx.Request, COOKIE_NAME)
+	if err != nil {
+		logger.LogHandlerIssue("sign-up", err)
+		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+	}
+
+	// Set session Id to cookie
+	session.Values[SESSION_ID_COOKIE_PARAM] = userId
+	if err = h.sessionStore.Save(ctx.Request, ctx.Writer, session); err != nil {
+		logger.LogHandlerIssue("sign-up", err)
+		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+	}
+
+	ctx.JSON(http.StatusCreated, map[string]interface{}{
+		"Status": "Successfully Authorized",
+	})
 }

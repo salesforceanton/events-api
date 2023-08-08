@@ -45,10 +45,9 @@ func (s *AuthService) generatePasswordHash(password string) string {
 }
 
 func (s *AuthService) GenerateToken(username, password string) (string, error) {
-	user, err := s.repo.GetUser(username, s.generatePasswordHash(password))
-
+	userId, err := s.GetUserId(username, password)
 	if err != nil {
-		return "", errors.New("No registered User with this credentials")
+		return "", err
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &TokenClaims{
@@ -56,7 +55,7 @@ func (s *AuthService) GenerateToken(username, password string) (string, error) {
 			ExpiresAt: time.Now().Add(time.Hour * 12).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
-		user.Id,
+		userId,
 	})
 
 	return token.SignedString([]byte(s.cfg.TokenSecret))
@@ -84,4 +83,14 @@ func (s *AuthService) ParseToken(accessToken string) (int, error) {
 	}
 
 	return claims.UserId, nil
+}
+
+func (s *AuthService) GetUserId(username, password string) (int, error) {
+	user, err := s.repo.GetUser(username, s.generatePasswordHash(password))
+
+	if err != nil {
+		return 0, errors.New("No registered User with this credentials")
+	}
+
+	return user.Id, nil
 }

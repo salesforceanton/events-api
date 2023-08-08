@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/sessions"
 	"github.com/salesforceanton/events-api/pkg/service"
 
 	swaggerFiles "github.com/swaggo/files"
@@ -13,11 +14,15 @@ import (
 )
 
 type Handler struct {
-	services *service.Service
+	services     *service.Service
+	sessionStore *sessions.CookieStore
 }
 
-func NewHandler(services *service.Service) *Handler {
-	return &Handler{services: services}
+func NewHandler(services *service.Service, sessionStore *sessions.CookieStore) *Handler {
+	return &Handler{
+		services:     services,
+		sessionStore: sessionStore,
+	}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {
@@ -29,7 +34,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/sign-up", h.SignUp)
 		auth.POST("/sign-in", h.SignIn)
 	}
-	api := router.Group("api", h.userIdentity)
+	api := router.Group("api", h.checkUserSession)
 	{
 		events := api.Group("events")
 		{
