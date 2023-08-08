@@ -18,6 +18,7 @@ type Config struct {
 	PasswordHashSalt string `envconfig:"PASSWORD_HASH_SALT"`
 	TokenSecret      string `envconfig:"TOKEN_SECRET"`
 	Port             string `envconfig:"PORT"`
+	LoggerbinPort    int    `envconfig:"GRPC_LOGGERBIN_PORT"`
 }
 
 // Recieve configuration values from env variables

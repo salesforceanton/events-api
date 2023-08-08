@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/salesforceanton/events-api/pkg/service"
+	grpc_client "github.com/salesforceanton/events-api/pkg/transport/grpc"
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -13,11 +14,15 @@ import (
 )
 
 type Handler struct {
-	services *service.Service
+	services  *service.Service
+	loggerbin *grpc_client.LoggerbinClient
 }
 
-func NewHandler(services *service.Service) *Handler {
-	return &Handler{services: services}
+func NewHandler(services *service.Service, loggerbin *grpc_client.LoggerbinClient) *Handler {
+	return &Handler{
+		services:  services,
+		loggerbin: loggerbin,
+	}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {

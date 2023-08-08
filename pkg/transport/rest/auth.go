@@ -1,11 +1,15 @@
 package handler
 
 import (
+	"context"
+	"errors"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/salesforceanton/events-api/domain"
 	"github.com/salesforceanton/events-api/pkg/logger"
+	loggerbin "github.com/salesforceanton/grpc-logger-bin/pkg/domain"
 )
 
 type SignInInput struct {
@@ -60,12 +64,33 @@ func (h *Handler) SignIn(ctx *gin.Context) {
 	if err := ctx.BindJSON(&request); err != nil {
 		logger.LogHandlerIssue("sign-in", err)
 		NewErrorResponse(ctx, http.StatusBadRequest, "Request is invalid type")
+		return
 	}
 
-	token, err := h.services.Authorization.GenerateToken(request.Username, request.Password)
+	userId, err := h.services.Authorization.GetUserId(request.Username, request.Password)
 	if err != nil {
 		logger.LogHandlerIssue("sign-up", err)
 		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	token, err := h.services.Authorization.GenerateToken(userId)
+	if err != nil {
+		logger.LogHandlerIssue("sign-up", err)
+		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	err = h.loggerbin.SendLog(context.Background(), loggerbin.LogItem{
+		Action:    loggerbin.ACTION_LOGIN,
+		Entity:    loggerbin.ENTITY_USER,
+		EntityID:  int64(userId),
+		Timestamp: time.Now(),
+	})
+	if err != nil {
+		logger.LogHandlerIssue("sign-in", errors.New("Failed to send log request to loggerbin"))
+		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	ctx.JSON(http.StatusCreated, map[string]interface{}{
