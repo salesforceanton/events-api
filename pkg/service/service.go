@@ -6,6 +6,8 @@ import (
 	"github.com/salesforceanton/events-api/pkg/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Service struct {
 	Authorization
 	Events

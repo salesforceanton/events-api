@@ -95,6 +95,7 @@ func (h *Handler) Create(ctx *gin.Context) {
 	if err := ctx.BindJSON(&request); err != nil {
 		logger.LogHandlerIssue("create", errors.New("Request is invalid type"))
 		NewErrorResponse(ctx, http.StatusBadRequest, "Request is invalid type")
+		return
 	}
 
 	userId, err := h.getUserContext(ctx)

@@ -30,12 +30,14 @@ func (h *Handler) SignUp(ctx *gin.Context) {
 	if err := ctx.BindJSON(&request); err != nil {
 		logger.LogHandlerIssue("sign-up", err)
 		NewErrorResponse(ctx, http.StatusBadRequest, "Request is invalid type")
+		return
 	}
 
 	id, err := h.services.Authorization.CreateUser(request)
 	if err != nil {
 		logger.LogHandlerIssue("sign-up", err)
 		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	ctx.JSON(http.StatusCreated, map[string]interface{}{
@@ -60,12 +62,14 @@ func (h *Handler) SignIn(ctx *gin.Context) {
 	if err := ctx.BindJSON(&request); err != nil {
 		logger.LogHandlerIssue("sign-in", err)
 		NewErrorResponse(ctx, http.StatusBadRequest, "Request is invalid type")
+		return
 	}
 
 	token, err := h.services.Authorization.GenerateToken(request.Username, request.Password)
 	if err != nil {
 		logger.LogHandlerIssue("sign-up", err)
 		NewErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	ctx.JSON(http.StatusCreated, map[string]interface{}{
