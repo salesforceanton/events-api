@@ -31,6 +31,7 @@ func (h *Handler) GetAll(ctx *gin.Context) {
 		return
 	}
 
+	// TODO: Handle sql: no rows error and return user-friendly error message
 	result, err := h.services.Events.GetAll(userId)
 	if err != nil {
 		logger.LogHandlerIssue("get-all", err)
@@ -68,6 +69,7 @@ func (h *Handler) GetById(ctx *gin.Context) {
 		return
 	}
 
+	// TODO: Handle sql: no rows error and return user-friendly error message
 	result, err := h.services.Events.GetById(userId, eventId)
 	if err != nil {
 		logger.LogHandlerIssue("get-by-id", err)

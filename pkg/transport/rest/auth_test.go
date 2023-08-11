@@ -83,7 +83,7 @@ func TestHandler_signUp(t *testing.T) {
 
 			// Create Request and empty Response
 			resp := httptest.NewRecorder()
-			req := httptest.NewRequest("POST", "/sign-up", bytes.NewBufferString(test.inputBody))
+			req := httptest.NewRequest(http.MethodPost, "/sign-up", bytes.NewBufferString(test.inputBody))
 
 			// Make Request
 			r.ServeHTTP(resp, req)
@@ -148,7 +148,7 @@ func TestHandler_signIn(t *testing.T) {
 
 			// Create Request and empty Response
 			resp := httptest.NewRecorder()
-			req := httptest.NewRequest("POST", "/sign-in", bytes.NewBufferString(test.inputBody))
+			req := httptest.NewRequest(http.MethodPost, "/sign-in", bytes.NewBufferString(test.inputBody))
 
 			// Make Request
 			r.ServeHTTP(resp, req)
